@@ -21,12 +21,9 @@ const allowedOrigins = [
   'http://localhost:5173', 
   'http://localhost:5174',
   'https://text-book-frontend.vercel.app',
-  'https://text-book-frontend.vercel.app/'
 ];
 
-if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
-}
+
 
 // Enable CORS pre-flight across all routes
 app.options('*', cors({

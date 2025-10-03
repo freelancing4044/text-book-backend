@@ -20,16 +20,18 @@ router.post('/login', loginAdmin);
 // All subsequent routes are protected and require admin authentication
 router.use(adminAuthMiddleware);
 
-// Routes for managing other admins
-router.post('/create', createAdmin);
-router.get('/all', getAdmins);
-router.delete('/:id', deleteAdmin);
+// ===== Admin Management Routes =====
+router.post('/create', createAdmin);  // Create new admin
+router.get('/all', getAdmins);        // List all admins
+router.delete('/:id', deleteAdmin);   // Delete admin by ID
 
-// Routes for managing users and viewing stats
-router.get('/debug', debugData);
-router.get('/users/stats', getUserStats);
-router.get('/users', getAllUsers);
-router.get('/users/:userId/tests', getUserTestHistory);
-router.delete('/users/:userId', deactivateUser);
+// ===== User Management Routes =====
+router.get('/users', getAllUsers);                    // Get all users
+router.get('/users/stats', getUserStats);             // Get user statistics
+router.get('/users/:userId/tests', getUserTestHistory); // Get user test history
+router.delete('/users/:userId', deactivateUser);       // Deactivate user
+
+// ===== Debug/Utility Routes =====
+router.get('/debug', debugData);  // Debug endpoint
 
 export default router;

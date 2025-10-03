@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 
 // Initialize Express
 const app = express();
-const port = process.env.PORT || 4000;
+const port = 4000;
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -16,32 +16,26 @@ const __dirname = path.dirname(__filename);
 // Middleware
 app.use(express.json());
 
-// CORS configuration
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'https://text-book-frontend.vercel.app',
-];
-
-// CORS options
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token'],
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-};
+// CORS configuration middleware
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
 
 // Enable CORS for all routes
-app.use(cors(corsOptions));
-
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -71,11 +65,6 @@ import newsRouter from "./routes/newsRoute.js";
 import testRouter from "./routes/testRoute.js";
 import adminRouter from "./routes/adminRoute.js";
 
-// Root route for testing
-app.get("/", (req, res) => {
-  res.json({ message: "API is running..." });
-});
-
 // API routes
 app.use("/api/users", userRouter);
 app.use("/api/news", newsRouter);
@@ -104,5 +93,35 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Export the app for Vercel
-export default app;
+// Start server
+const server = app.listen(port, () => {
+  console.log(`\n=== Server started successfully ===`);
+  console.log(`Server running at http://localhost:${port}`);
+  console.log(`\nAvailable routes:`);
+  console.log(`GET  /`);
+  console.log(`GET  /test`);
+  console.log(`GET  /api/tests/health`);
+  console.log(`GET  /api/tests/test-route`);
+  console.log(`GET  /api/tests/:subject`);
+  console.log(`POST /api/tests/submit`);
+  console.log(`\nUse Ctrl+C to stop the server\n`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Error: Port ${port} is already in use`);
+  } else {
+    console.error('Server error:', error);
+  }
+  process.exit(1);
+});
+
+// Handle process termination
+process.on('SIGINT', () => {
+  console.log('\nShutting down server...');
+  server.close(() => {
+    console.log('Server has been terminated');
+    process.exit(0);
+  });
+});

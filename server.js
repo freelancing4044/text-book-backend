@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // CORS configuration middleware
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174','https://text-book-frontend.vercel.app'];
 if (process.env.FRONTEND_URL) {
   allowedOrigins.push(process.env.FRONTEND_URL);
 }

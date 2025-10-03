@@ -27,16 +27,20 @@ const allowedOrigins = [
 // Enable CORS for all routes
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  console.log('Request Origin:', origin); // Debug log
+  
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-  }
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+  } else if (origin) {
+    console.log('Blocked CORS for origin:', origin);
   }
   
   next();

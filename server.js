@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-auth-token, cache-control');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     
     // Handle preflight requests
@@ -73,6 +73,17 @@ import userRouter from "./routes/userRoute.js";
 import newsRouter from "./routes/newsRoute.js";
 import testRouter from "./routes/testRoute.js";
 import adminRouter from "./routes/adminRoute.js";
+
+// Debug endpoint for testing
+app.get('/api/debug', (req, res) => {
+  res.json({
+    status: 'success',
+    message: 'Debug endpoint is working',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    nodeVersion: process.version
+  });
+});
 
 // API routes
 app.use("/api/users", userRouter);

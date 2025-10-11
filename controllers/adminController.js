@@ -310,7 +310,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// DELETE /api/admin/users/:userId - Deactivate a user (soft delete)
 // GET /api/admin/debug - Debug endpoint to check database data
 export const debugData = async (req, res) => {
   try {
@@ -448,52 +447,5 @@ export const deleteAdmin = async (req, res) => {
   } catch (error) {
     console.error("deleteAdmin error:", error);
     return res.status(500).json({ success: false, message: "Server error while deleting admin." });
-  }
-};
-
-export const deactivateUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid user ID format'
-      });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    // Prevent deactivating admin users
-    if (user.role === 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Cannot deactivate admin users'
-      });
-    }
-
-    // Soft delete by setting isActive to false
-    user.isActive = false;
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: 'User deactivated successfully',
-      data: { userId: user._id, name: user.name }
-    });
-    
-  } catch (error) {
-    console.error('deactivateUser error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Server error while deactivating user',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
   }
 };

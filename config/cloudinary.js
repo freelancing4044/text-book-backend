@@ -6,7 +6,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Parse the CLOUDINARY_URL
 const cloudinaryUrl = process.env.CLOUDINARY_URL;
 if (!cloudinaryUrl) {
   throw new Error('CLOUDINARY_URL is not defined in environment variables');

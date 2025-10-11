@@ -7,7 +7,6 @@ import {
     getUserStats,
     getUserTestHistory,
     getAllUsers,
-    deactivateUser,
     debugData
 } from '../controllers/adminController.js';
 import adminAuthMiddleware from '../middleware/adminAuthMiddleware.js';
@@ -29,7 +28,6 @@ router.delete('/:id', deleteAdmin);   // Delete admin by ID
 router.get('/users', getAllUsers);                    // Get all users
 router.get('/users/stats', getUserStats);             // Get user statistics
 router.get('/users/:userId/tests', getUserTestHistory); // Get user test history
-router.delete('/users/:userId', deactivateUser);       // Deactivate user
 
 // ===== Debug/Utility Routes =====
 router.get('/debug', debugData);  // Debug endpoint

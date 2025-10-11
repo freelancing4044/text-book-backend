@@ -5,7 +5,7 @@ import '../models/index.js'; // Register all models
 export const connectDB = async () => {
     try {
         const conn = await mongoose.connect(process.env.MONGODB_URL, {
-            maxPoolSize: 100,           // Allow up to 150 concurrent connections
+            maxPoolSize: 100,        
             serverSelectionTimeoutMS: 10000, // Wait up to 10s for a server
             socketTimeoutMS: 45000,    // 45s per request before socket timeout
         });
